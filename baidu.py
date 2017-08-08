@@ -46,12 +46,15 @@ class baidu_Search:
     def getNextPageUrl(self,htmlunicode):
         #pattern = re.compile(r'<div id="page"\s*>.*?<strong>.*?</strong><a href="(.*?)">')
         #m = pattern.search(htmlunicode)
-        a = htmlunicode.find(u'下一页')
-        c = htmlunicode.find('<div id="page" >')
-        b = htmlunicode[c:a-12].split('"')
-        m = b[int(len(b)-1)]
+        try:
+           a = htmlunicode.index(u'下一页')
+           c = htmlunicode.index('<div id="page" >')
+           b = htmlunicode[c:a-12].split('"')
+           m = b[int(len(b)-1)]
+        except:
+           m = ""
         nextPageUrl = ''
-        if m:
+        if (m!=""):
             nextPageUrl = 'http://www.baidu.com' + m
         else:
             print u"未找到下一页"
