@@ -46,8 +46,8 @@ class baidu_Search:
     def getNextPageUrl(self,htmlunicode):
         #pattern = re.compile(r'<div id="page"\s*>.*?<strong>.*?</strong><a href="(.*?)">')
         #m = pattern.search(htmlunicode)
-        a = htmlunicode.index(u'下一页')
-        c = htmlunicode.index('<div id="page" >')
+        a = htmlunicode.find(u'下一页')
+        c = htmlunicode.find('<div id="page" >')
         b = htmlunicode[c:a-12].split('"')
         m = b[int(len(b)-1)]
         nextPageUrl = ''
@@ -116,10 +116,16 @@ class baidu_Search:
         print pagesCount
 
         while self.enable:
-            print u'请按[回车键]浏览第',self.page+1,'页内容,输入[quit]退出程序:'
-            myInput = raw_input()
-            if (myInput== 'quit'):
-                break  
+            if(len(sys.argv)==3):
+               if(int(sys.argv[2]) > self.page):
+                  print u'正在浏览第',self.page+1,'页'
+               else:
+                  break
+            else:
+               print u'请按[回车键]浏览第',self.page+1,'页内容,输入[quit]退出程序:'
+               myInput = raw_input()
+               if (myInput== 'quit'):
+                   break  
             titles_abstracts = self.getTitles_Abstracts(htmlunicode)
             for index in range(len(titles_abstracts)):
                 print u"第",self.page+1,"页第",index+1,"个搜索结果..."
@@ -137,14 +143,16 @@ class baidu_Search:
             htmlunicode = resp.read().decode('utf-8')
             
 if __name__ == '__main__':
-    print u"""
+    if (len(sys.argv) < 2):
+        print u"""
 --------------------------------------------
-    author: hao-app
-    date  : 2015-03-11
-    howTo : enter "quit" to quit program
-    advert: 按下任意键来浏览,按下quit退出
+author: Ted
+date  : 2017-08-08
+howTo : python baidu.py keyword ,enter "quit" to quit program
+advert: python baidu.py 关键词 ，按下任意键来浏览,按下quit退出
 --------------------------------------------
-"""
-    myBaidu = baidu_Search()
-    myBaidu.Search(raw_input(u'enter keyword to search: '))
+        """
+    else:
+        myBaidu = baidu_Search()
+        myBaidu.Search(sys.argv[1])
     fp.close()
